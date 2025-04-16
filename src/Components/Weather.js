@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Weather.css'
 import clearIcon from './../Assets/clear.png';
 import cloudIcon from './../Assets/cloud.png';
@@ -10,8 +10,6 @@ import windIcon from './../Assets/wind.png';
 import searchIcon from './../Assets/search.png';
 import nightRainIcon from './../Assets/night-rain.png';
 import nightSkyIcon from './../Assets/night-sky.png';
-
-
 
 const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind }) => {
   return (
@@ -52,10 +50,7 @@ const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind })
   );
 }
 
-
-
 const Weather = () => {
-
   const [text, setText] = useState("Tirunelveli")
   const [icon, setIcon] = useState(rainIcon);
   const [temp, setTemp] = useState(0);
@@ -70,29 +65,27 @@ const Weather = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-
-  const weatherIconMap = {
-    "01d" : clearIcon,
-    "01n" : nightSkyIcon,
-    "02d" : cloudIcon,
-    "02n" : nightSkyIcon,
-    "03d" : drizzleIcon,
-    "03n" : drizzleIcon,
-    "04d" : drizzleIcon,
-    "04n" : drizzleIcon,
-    "09d" : rainIcon,
-    "09n" : nightRainIcon,
-    "10d" : rainIcon,
-    "10n" : nightRainIcon,
-    "13d" : snowIcon,
-    "13n" : snowIcon,
-  };
-
-  const search = async () => {
+  const search = useCallback(async () => {
+    const weatherIconMap = {
+      "01d": clearIcon,
+      "01n": nightSkyIcon,
+      "02d": cloudIcon,
+      "02n": nightSkyIcon,
+      "03d": drizzleIcon,
+      "03n": drizzleIcon,
+      "04d": drizzleIcon,
+      "04n": drizzleIcon,
+      "09d": rainIcon,
+      "09n": nightRainIcon,
+      "10d": rainIcon,
+      "10n": nightRainIcon,
+      "13d": snowIcon,
+      "13n": snowIcon,
+    };
 
     setLoading(true);
 
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${text}&appid=e8617cc12ff2a652e850833919b29979&units=Metric`
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${text}&appid=e8617cc12ff2a652e850833919b29979&units=Metric`;
 
     try {
       let res = await fetch(url);
@@ -114,19 +107,17 @@ const Weather = () => {
       setLong(data.coord.lon);
       const weatherIconCode = data.weather[0].icon;
       setIcon(weatherIconMap[weatherIconCode] || snowIcon);
-      setCityNotFound(false)
-      
+      setCityNotFound(false);
     } catch (error) {
-      console.error("An error occured:", error.message)
-      setError("An error occured while fetching weather data")
+      console.error("An error occurred:", error.message);
+      setError("An error occurred while fetching weather data");
+    } finally {
+      setLoading(false);
     }
-    finally{
-      setLoading(false)
-    }
-  }
+  }, [text]);
 
   const handleCity = (e) => {
-    setText(e.target.value)
+    setText(e.target.value);
   }
 
   const handlekeydown = (e) => {
@@ -137,18 +128,18 @@ const Weather = () => {
 
   useEffect(() => {
     search();
-  }, []);
-  
+  }, [search]);
 
   return (
     <div className='container'>
       <div className='input-container'>
-        <input type='text'
+        <input
+          type='text'
           className='input-text'
           placeholder='search city'
           onChange={handleCity}
-          value={text} 
-          onKeyDown={handlekeydown}/>
+          value={text}
+          onKeyDown={handlekeydown} />
         <div className='search-i'>
           <img className='search-icon' onClick={() => search()} src={searchIcon} alt='search' />
         </div>
@@ -156,13 +147,13 @@ const Weather = () => {
       {!loading && !cityNotFound && <WeatherDetail icon={icon} temp={temp} city={city} country={country}
         lat={lat} long={long} humitity={humitity} wind={wind} />}
 
-       {loading && <div className='loading-msg'>Loading...</div>}
-        {error && <div className='error-msg'>{error}</div>}
-        {cityNotFound && <div className='city-not-found'>City Not Found</div>}
+      {loading && <div className='loading-msg'>Loading...</div>}
+      {error && <div className='error-msg'>{error}</div>}
+      {cityNotFound && <div className='city-not-found'>City Not Found</div>}
 
       <p className='copyright'>Designed by <span>Yabesh</span></p>
     </div>
   )
 }
 
-export default Weather
+export default Weather;
