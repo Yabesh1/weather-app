@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Weather.css'
+import './Weather.css';
 import clearIcon from './../Assets/clear.png';
 import cloudIcon from './../Assets/cloud.png';
 import drizzleIcon from './../Assets/drizzle.png';
@@ -15,27 +15,27 @@ const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind })
   return (
     <>
       <div className='image'>
-        <img src={icon} alt='clear' />
+        <img src={icon} alt='weather-icon' />
       </div>
       <div className='temp'>{temp}&deg;C</div>
       <div className='location'>{city}</div>
       <div className='country'>{country}</div>
       <div className='cord'>
         <div>
-          <span className='lat'>lattitude</span>
+          <span className='lat'>Latitude</span>
           <span>{lat}</span>
         </div>
         <div>
-          <span className='long'>longitude</span>
+          <span className='long'>Longitude</span>
           <span>{long}</span>
         </div>
       </div>
       <div className='data-container'>
         <div className='element'>
-          <img className='humidity-img' src={humidityIcon} alt='humitity' />
+          <img className='humidity-img' src={humidityIcon} alt='humidity' />
           <div className='data'>
             <div className='humidity-percent'>{humitity}%</div>
-            <div className='text'>humidity</div>
+            <div className='text'>Humidity</div>
           </div>
         </div>
         <div className='element'>
@@ -48,10 +48,10 @@ const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind })
       </div>
     </>
   );
-}
+};
 
 const Weather = () => {
-  const [text, setText] = useState("Tirunelveli")
+  const [text, setText] = useState("Tirunelveli");
   const [icon, setIcon] = useState(rainIcon);
   const [temp, setTemp] = useState(0);
   const [city, setCity] = useState("");
@@ -60,7 +60,6 @@ const Weather = () => {
   const [long, setLong] = useState(0);
   const [humitity, setHumitity] = useState(0);
   const [wind, setWind] = useState(0);
-
   const [cityNotFound, setCityNotFound] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -84,6 +83,7 @@ const Weather = () => {
     };
 
     setLoading(true);
+    setError(null);
 
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${text}&appid=e8617cc12ff2a652e850833919b29979&units=Metric`;
 
@@ -105,6 +105,7 @@ const Weather = () => {
       setCountry(data.sys.country);
       setLat(data.coord.lat);
       setLong(data.coord.lon);
+
       const weatherIconCode = data.weather[0].icon;
       setIcon(weatherIconMap[weatherIconCode] || snowIcon);
       setCityNotFound(false);
@@ -118,17 +119,17 @@ const Weather = () => {
 
   const handleCity = (e) => {
     setText(e.target.value);
-  }
+  };
 
-  const handlekeydown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       search();
     }
-  }
+  };
 
   useEffect(() => {
     search();
-  }, [search]);
+  }, []);
 
   return (
     <div className='container'>
@@ -136,24 +137,44 @@ const Weather = () => {
         <input
           type='text'
           className='input-text'
-          placeholder='search city'
+          placeholder='Search city'
           onChange={handleCity}
           value={text}
-          onKeyDown={handlekeydown} />
+          onKeyDown={handleKeyDown}
+        />
         <div className='search-i'>
-          <img className='search-icon' onClick={() => search()} src={searchIcon} alt='search' />
+          <img
+            className='search-icon'
+            onClick={() => search()}
+            src={searchIcon}
+            alt='search'
+          />
         </div>
       </div>
-      {!loading && !cityNotFound && <WeatherDetail icon={icon} temp={temp} city={city} country={country}
-        lat={lat} long={long} humitity={humitity} wind={wind} />}
+
+      {!loading && !cityNotFound && (
+        <WeatherDetail
+          icon={icon}
+          temp={temp}
+          city={city}
+          country={country}
+          lat={lat}
+          long={long}
+          humitity={humitity}
+          wind={wind}
+        />
+      )}
 
       {loading && <div className='loading-msg'>Loading...</div>}
       {error && <div className='error-msg'>{error}</div>}
       {cityNotFound && <div className='city-not-found'>City Not Found</div>}
 
-      <p className='copyright'>Designed by <span>Yabesh</span></p>
+      <p className='copyright'>
+        Designed by <span>Yabesh</span>
+      </p>
     </div>
-  )
-}
+  );
+};
 
 export default Weather;
+
