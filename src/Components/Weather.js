@@ -11,7 +11,7 @@ import searchIcon from './../Assets/search.png';
 import nightRainIcon from './../Assets/night-rain.png';
 import nightSkyIcon from './../Assets/night-sky.png';
 
-const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind }) => {
+const WeatherDetail = ({ icon, temp, city, country, lat, long, humidity, wind }) => {
   return (
     <>
       <div className='image'>
@@ -34,7 +34,7 @@ const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind })
         <div className='element'>
           <img className='humidity-img' src={humidityIcon} alt='humidity' />
           <div className='data'>
-            <div className='humidity-percent'>{humitity}%</div>
+            <div className='humidity-percent'>{humidity}%</div>
             <div className='text'>Humidity</div>
           </div>
         </div>
@@ -51,20 +51,20 @@ const WeatherDetail = ({ icon, temp, city, country, lat, long, humitity, wind })
 };
 
 const Weather = () => {
-  const [text, setText] = useState("Tirunelveli");
+  const [text, setText] = useState("Tirunelveli"); 
   const [icon, setIcon] = useState(rainIcon);
   const [temp, setTemp] = useState(0);
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
-  const [humitity, setHumitity] = useState(0);
+  const [humidity, setHumidity] = useState(0);
   const [wind, setWind] = useState(0);
   const [cityNotFound, setCityNotFound] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const search = useCallback(async () => {
+  const search = useCallback(async (cityName) => {
     const weatherIconMap = {
       "01d": clearIcon,
       "01n": nightSkyIcon,
@@ -85,20 +85,19 @@ const Weather = () => {
     setLoading(true);
     setError(null);
 
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${text}&appid=e8617cc12ff2a652e850833919b29979&units=Metric`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=e8617cc12ff2a652e850833919b29979&units=Metric`;
 
     try {
       let res = await fetch(url);
       let data = await res.json();
 
       if (data.cod === "404") {
-        console.error("City Not Found");
         setCityNotFound(true);
         setLoading(false);
         return;
       }
 
-      setHumitity(data.main.humidity);
+      setHumidity(data.main.humidity);
       setWind(data.wind.speed);
       setTemp(Math.floor(data.main.temp));
       setCity(data.name);
@@ -110,25 +109,28 @@ const Weather = () => {
       setIcon(weatherIconMap[weatherIconCode] || snowIcon);
       setCityNotFound(false);
     } catch (error) {
-      console.error("An error occurred:", error.message);
       setError("An error occurred while fetching weather data");
     } finally {
       setLoading(false);
     }
-  }, [text]);
+  }, []);
+
 
   const handleCity = (e) => {
-    setText(e.target.value);
+    setText(e.target.value); 
   };
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      search();
+      e.preventDefault();
+      search(text); 
     }
   };
 
   useEffect(() => {
-    search();
+    search(text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -139,13 +141,13 @@ const Weather = () => {
           className='input-text'
           placeholder='Search city'
           onChange={handleCity}
-          value={text}
-          onKeyDown={handleKeyDown}
+          value={text} 
+          onKeyDown={handleKeyDown} 
         />
         <div className='search-i'>
           <img
             className='search-icon'
-            onClick={() => search()}
+            onClick={() => search(text)}
             src={searchIcon}
             alt='search'
           />
@@ -160,7 +162,7 @@ const Weather = () => {
           country={country}
           lat={lat}
           long={long}
-          humitity={humitity}
+          humidity={humidity}
           wind={wind}
         />
       )}
@@ -177,4 +179,3 @@ const Weather = () => {
 };
 
 export default Weather;
-
