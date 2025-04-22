@@ -130,3 +130,79 @@ body {
     font-weight: 400;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .input-container input {
+        font-size: 14px;
+        padding: 8px;
+        height: 28px;
+    }
+    .search-i {
+        width: 22px;
+        height: 28px;
+    }
+    .search-icon {
+        width: 22px;
+        margin-top: 3px;
+    }
+    .image > img {
+        width: 140px;
+    }
+    .temp {
+        font-size: 28px;
+    }
+    .location {
+        font-size: 32px;
+    }
+    .country {
+        font-size: 16px;
+    }
+    .cord {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .cord > div > span {
+        font-size: 13px;
+    }
+    .cord > div > span:nth-child(2) {
+        font-size: 16px;
+        padding-top: 8px;
+    }
+    .wind-img, .humidity-img {
+        width: 30px;
+    }
+}
+
+@media (max-width: 421px) {
+    .container {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        padding: 20px;
+    }
+    .image > img {
+        width: 120px;
+        padding: 8px;
+    }
+    .temp {
+        font-size: 24px;
+    }
+    .location {
+        font-size: 28px;
+    }
+    .country {
+        font-size: 14px;
+    }
+    .cord {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .wind-img, .humidity-img {
+        width: 28px;
+    }
+}
